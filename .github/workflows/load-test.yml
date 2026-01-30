@@ -40,7 +40,7 @@ jobs:
           if [[ "$ARCH" == *"arm"* ]]; then
             ARCH="arm64"
           else
-            ARCH="amd64"
+            ARCH="x64"
           fi
 
           DOWNLOAD_URL="https://load-api.browserstack.com/api/v1/binary?os=${OS}&arch=${ARCH}"
