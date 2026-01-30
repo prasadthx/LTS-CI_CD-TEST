@@ -43,7 +43,7 @@ jobs:
             ARCH="amd64"
           fi
 
-          DOWNLOAD_URL="https://load-api.browserstack.com/api/v1/binary?os=${os}&arch=${arch}"
+          DOWNLOAD_URL="https://load-api.browserstack.com/api/v1/binary?os=${OS}&arch=${ARCH}"
           echo "OS=$OS | ARCH=$ARCH | DOWNLOAD_URL=$DOWNLOAD_URL"
 
           curl -fL "$DOWNLOAD_URL" -o browserstack-cli.zip
