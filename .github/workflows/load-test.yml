@@ -60,6 +60,7 @@ jobs:
       - name: Run BrowserStack Load Test
         shell: bash
         run: |
+          ls -a
           ./browserstack-cli load run
 
       - name: Publish JUnit Report
