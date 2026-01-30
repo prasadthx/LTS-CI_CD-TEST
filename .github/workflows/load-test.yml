@@ -1,0 +1,69 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  load-test:
+    runs-on: ubuntu-latest   # change to macos-latest / windows-latest if needed
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run Unit Tests
+        run: echo "Running Unit Tests"
+
+      - name: Detect OS & Architecture and Download BrowserStack CLI
+        shell: bash
+        run: |
+          OS=$(uname -s)
+          ARCH=$(uname -m)
+
+          if [[ "$OS" == "Darwin" ]]; then
+            OS="macos"
+          else
+            OS="linux"
+          fi
+
+          if [[ "$ARCH" == *"arm"* ]]; then
+            ARCH="arm64"
+          else
+            ARCH="amd64"
+          fi
+
+          DOWNLOAD_URL="https://load-api.browserstack.com/api/v1/binary?os=${os}&arch=${arch}"
+          echo "OS=$OS | ARCH=$ARCH | DOWNLOAD_URL=$DOWNLOAD_URL"
+
+          curl -fL "$DOWNLOAD_URL" -o browserstack-cli.zip
+          unzip -oq browserstack-cli.zip
+          chmod +x browserstack-cli
+
+      - name: Checkout sample Playwright repo
+        uses: actions/checkout@v4
+        with:
+          repository: browserstack/browserstack-playwright-load-testing-sample
+          ref: CI/CD-Sample-Playwright
+          path: sample-tests
+
+      - name: Run BrowserStack Load Test
+        shell: bash
+        run: |
+          ./browserstack-cli load run
+
+      - name: Publish JUnit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-test-report
+          path: browserstack-load-test-report-*.xml
