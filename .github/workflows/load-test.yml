@@ -61,7 +61,7 @@ jobs:
         shell: bash
         run: |
           ls -a sample-tests
-          ./browserstack-cli load run --config-file=./sample-tests/browserstack-load.yml
+          ./browserstack-cli load run --config-file ./sample-tests/browserstack-load.yml
 
       - name: Publish JUnit Report
         uses: actions/upload-artifact@v4
