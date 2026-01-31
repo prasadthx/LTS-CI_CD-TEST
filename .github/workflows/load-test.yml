@@ -65,6 +65,8 @@ jobs:
         shell: bash
         run: |
           ls
+          echo "Username is : ${BROWSERSTACK_USERNAME:+YES}"
+          echo "ACCESS_KEY is set: ${BROWSERSTACK_ACCESS_KEY:+YES}"
           ./browserstack-cli load run
 
       - name: Publish JUnit Report
