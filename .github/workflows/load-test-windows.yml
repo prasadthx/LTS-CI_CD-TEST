@@ -67,6 +67,7 @@ jobs:
 
           Invoke-WebRequest $url -OutFile browserstack-cli.zip
           Expand-Archive browserstack-cli.zip -Force
+          ls
           cp binary-win-x64.exe browserstack-cli.exe
 
       - name: Checkout sample Playwright repo
