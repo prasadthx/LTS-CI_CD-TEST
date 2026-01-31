@@ -59,7 +59,7 @@ jobs:
       - name: Checkout sample Playwright repo
         shell: bash
         run: |
-          git clone https://github.com/browserstack/browserstack-playwright-load-testing-sample --branch CI/CD-Sample-Playwright
+          git clone https://github.com/browserstack/browserstack-playwright-load-testing-sample --branch CI/CD-Sample-Playwright .
         
       - name: Run BrowserStack Load Test
         shell: bash
