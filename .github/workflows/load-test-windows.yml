@@ -78,7 +78,7 @@ jobs:
       - name: Run BrowserStack Load Test
         shell: pwsh
         run: |
-          if ($runner.os -eq "Windows") {
+          if ($env:RUNNER_OS -eq "Windows") {
             ./browserstack-cli.exe load run
           } else {
             ./browserstack-cli load run
