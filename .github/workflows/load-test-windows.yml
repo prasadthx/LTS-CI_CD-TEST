@@ -19,8 +19,8 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  load-test:
-    runs-on: ubuntu-latest   # change to macos-latest / windows-latest if needed
+  load-test-windows:
+    runs-on: windows-latest   # change to macos-latest / ubuntu-latest if needed
 
     steps:
       - name: Checkout repo
