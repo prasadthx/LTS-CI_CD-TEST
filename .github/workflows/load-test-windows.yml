@@ -68,7 +68,8 @@ jobs:
           Invoke-WebRequest $url -OutFile browserstack-cli.zip
           Expand-Archive browserstack-cli.zip -Force
           ls
-          cp browserstack-cli browserstack-cli.exe
+          ls browserstack-cli
+          cp browserstack-cli/binary-linux-x64.exe browserstack-cli.exe
 
       - name: Checkout sample Playwright repo
         shell: pwsh
