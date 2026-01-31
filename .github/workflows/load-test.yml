@@ -57,17 +57,15 @@ jobs:
           chmod +x browserstack-cli
 
       - name: Checkout sample Playwright repo
-        uses: actions/checkout@v4
-        with:
-          repository: browserstack/browserstack-playwright-load-testing-sample
-          ref: CI/CD-Sample-Playwright
-          path: sample-tests
-
+        shell: bash
+        run: |
+          git clone https://github.com/browserstack/browserstack-playwright-load-testing-sample --branch CI/CD-Sample-Playwright
+        
       - name: Run BrowserStack Load Test
         shell: bash
         run: |
           ls
-          ./browserstack-cli load run --config-file ./sample-tests/browserstack-load.yml
+          ./browserstack-cli load run
 
       - name: Publish JUnit Report
         uses: actions/upload-artifact@v4
