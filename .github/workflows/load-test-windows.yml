@@ -81,7 +81,7 @@ jobs:
         run: |
           ls
           if ($env:RUNNER_OS -eq "Windows") {
-            browserstack-cli.exe load run
+            .\browserstack-cli.exe load run
           } else {
             ./browserstack-cli load run
           }
