@@ -1,0 +1,90 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI-MACOS
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+  BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  load-test-macos:
+    runs-on: macos-latest   # change to macos-latest / ubuntu-latest if needed
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Run Unit Tests
+        run: echo "Running Unit Tests"
+
+      - name: Detect OS & Architecture and Download BrowserStack CLI (Linux and MacOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          OS=$(uname -s)
+          ARCH=$(uname -m)
+
+          if [[ "$OS" == "Darwin" ]]; then
+            OS="macos"
+          else
+            OS="linux"
+          fi
+
+          if [[ "$ARCH" == *"arm"* ]]; then
+            ARCH="arm64"
+          else
+            ARCH="x64"
+          fi
+
+          DOWNLOAD_URL="https://load-api.browserstack.com/api/v1/binary?os=${OS}&arch=${ARCH}"
+          DOWNLOAD_URL="https://sdk-assets.bsstag.com/binary-macos-arm64-1.1.1-lts-cicd2.zip"
+          echo "OS=$OS | ARCH=$ARCH | DOWNLOAD_URL=$DOWNLOAD_URL"
+
+          curl -fL "$DOWNLOAD_URL" -o browserstack-cli.zip
+          unzip -oq browserstack-cli.zip
+          cp binary-macos-arm64 browserstack-cli
+          chmod +x browserstack-cli
+
+      - name: Download Browserstack CLI (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $url = "https://load-api.browserstack.com/api/v1/binary?os=win&arch=x64"
+          $url = "https://sdk-assets.bsstag.com/binary-win-x64-1.1.1-lts-cicd2.zip"
+          Write-Host "Downloading: $url"
+
+          Invoke-WebRequest $url -OutFile browserstack-cli.zip
+          Expand-Archive browserstack-cli.zip -Force
+          cp browserstack-cli/binary-win-x64.exe browserstack-cli.exe
+
+      - name: Checkout sample Playwright repo
+        shell: pwsh
+        run: |
+          curl -L https://github.com/browserstack/browserstack-playwright-load-testing-sample/archive/refs/heads/CI/CD-Sample-Playwright.tar.gz | tar -xz --strip-components=1
+          
+      - name: Run BrowserStack Load Test
+        shell: pwsh
+        run: |
+          if ($env:RUNNER_OS -eq "Windows") {
+            .\browserstack-cli.exe load run
+          } else {
+            ./browserstack-cli load run
+          }
+
+      - name: Publish JUnit Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: load-test-report
+          path: "reports-gha-${{ github.workflow }}-${{ github.run_number }}/browserstack-load-test-report-*.xml"
