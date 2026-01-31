@@ -69,7 +69,7 @@ jobs:
           Expand-Archive browserstack-cli.zip -Force
           ls
           ls browserstack-cli
-          cp browserstack-cli/binary-linux-x64.exe browserstack-cli.exe
+          cp browserstack-cli/binary-win-x64.exe browserstack-cli.exe
 
       - name: Checkout sample Playwright repo
         shell: pwsh
