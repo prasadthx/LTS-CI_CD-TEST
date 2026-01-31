@@ -61,13 +61,13 @@ jobs:
         with:
           repository: browserstack/browserstack-playwright-load-testing-sample
           ref: CI/CD-Sample-Playwright
-          path: sample-tests
+          path: ./ #sample-tests
 
       - name: Run BrowserStack Load Test
         shell: bash
         run: |
           ls -a sample-tests
-          ./browserstack-cli load run --config-file ./sample-tests/browserstack-load.yml
+          ./browserstack-cli load run 
 
       - name: Publish JUnit Report
         uses: actions/upload-artifact@v4
