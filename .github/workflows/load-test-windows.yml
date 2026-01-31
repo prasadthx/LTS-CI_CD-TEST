@@ -67,8 +67,6 @@ jobs:
 
           Invoke-WebRequest $url -OutFile browserstack-cli.zip
           Expand-Archive browserstack-cli.zip -Force
-          ls
-          ls browserstack-cli
           cp browserstack-cli/binary-win-x64.exe browserstack-cli.exe
 
       - name: Checkout sample Playwright repo
@@ -79,7 +77,6 @@ jobs:
       - name: Run BrowserStack Load Test
         shell: pwsh
         run: |
-          ls
           if ($env:RUNNER_OS -eq "Windows") {
             .\browserstack-cli.exe load run
           } else {
