@@ -44,11 +44,12 @@ jobs:
           fi
 
           DOWNLOAD_URL="https://load-api.browserstack.com/api/v1/binary?os=${OS}&arch=${ARCH}"
-          DOWNLOAD_URL="https://sdk-assets.bsstag.com/binary-linux-x64-1.1.1-lts-cicd.zip"
+          DOWNLOAD_URL="https://sdk-assets.bsstag.com/binary-linux-x64-1.1.1-lts-cicd2.zip"
           echo "OS=$OS | ARCH=$ARCH | DOWNLOAD_URL=$DOWNLOAD_URL"
 
           curl -fL "$DOWNLOAD_URL" -o browserstack-cli.zip
           unzip -oq browserstack-cli.zip
+          cp binary-linuxstatic-x64 browserstack-cli
           chmod +x browserstack-cli
 
       - name: Checkout sample Playwright repo
