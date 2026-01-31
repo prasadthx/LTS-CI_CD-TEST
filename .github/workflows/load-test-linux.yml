@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: CI-Ubuntu
 
 # Controls when the workflow will run
 on:
@@ -19,7 +19,7 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  load-test:
+  load-test-windows:
     runs-on: ubuntu-latest   # change to macos-latest / windows-latest if needed
 
     steps:
@@ -29,7 +29,8 @@ jobs:
       - name: Run Unit Tests
         run: echo "Running Unit Tests"
 
-      - name: Detect OS & Architecture and Download BrowserStack CLI
+      - name: Detect OS & Architecture and Download BrowserStack CLI (Linux and MacOS)
+        if: runner.os != 'Windows'
         shell: bash
         run: |
           OS=$(uname -s)
@@ -56,15 +57,31 @@ jobs:
           cp binary-linuxstatic-x64 browserstack-cli
           chmod +x browserstack-cli
 
+      - name: Download Browserstack CLI (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $url = "https://load-api.browserstack.com/api/v1/binary?os=win&arch=x64"
+          $url = "https://sdk-assets.bsstag.com/binary-win-x64-1.1.1-lts-cicd2.zip"
+          Write-Host "Downloading: $url"
+
+          Invoke-WebRequest $url -OutFile browserstack-cli.zip
+          Expand-Archive browserstack-cli.zip -Force
+          cp browserstack-cli/binary-win-x64.exe browserstack-cli.exe
+
       - name: Checkout sample Playwright repo
-        shell: bash
+        shell: pwsh
         run: |
           curl -L https://github.com/browserstack/browserstack-playwright-load-testing-sample/archive/refs/heads/CI/CD-Sample-Playwright.tar.gz | tar -xz --strip-components=1
           
       - name: Run BrowserStack Load Test
-        shell: bash
+        shell: pwsh
         run: |
-          ./browserstack-cli load run
+          if ($env:RUNNER_OS -eq "Windows") {
+            .\browserstack-cli.exe load run
+          } else {
+            ./browserstack-cli load run
+          }
 
       - name: Publish JUnit Report
         uses: actions/upload-artifact@v4
