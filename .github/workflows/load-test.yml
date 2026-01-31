@@ -64,11 +64,10 @@ jobs:
       - name: Run BrowserStack Load Test
         shell: bash
         run: |
-          ls
           ./browserstack-cli load run
 
       - name: Publish JUnit Report
         uses: actions/upload-artifact@v4
         with:
           name: load-test-report
-          path: reports-gha-${{ github.workflow }}-${{ github.run_number }}/browserstack-load-test-report-*.xml
+          path: "reports-gha-${{ github.workflow }}-${{ github.run_number }}/browserstack-load-test-report-*.xml"
