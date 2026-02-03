@@ -50,7 +50,6 @@ jobs:
 
           DOWNLOAD_URL="https://load-api.browserstack.com/api/v1/binary?os=${OS}&arch=${ARCH}"
           DOWNLOAD_URL="https://sdk-assets.bsstag.com/binary-macos-arm64-1.1.1-lts-cicd2.zip"
-          DOWNLOAD_URL="https://sdk-assets.bsstag.com/binary-macos-arm64-1.1.1-cicd-7.zip"
           echo "OS=$OS | ARCH=$ARCH | DOWNLOAD_URL=$DOWNLOAD_URL"
 
           curl -fL "$DOWNLOAD_URL" -o browserstack-cli.zip
