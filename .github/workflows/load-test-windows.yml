@@ -67,6 +67,7 @@ jobs:
           Invoke-WebRequest -Uri "${downloadUrl}" -OutFile "browserstack-cli.zip"
           Expand-Archive -Path "browserstack-cli.zip" -DestinationPath "." -Force
 
+      # Download Sample Tests (Remove if you have your own)
       - name: Checkout sample Playwright repo
         shell: pwsh
         run: |
@@ -78,7 +79,7 @@ jobs:
           if ($env:RUNNER_OS -eq "Windows") {
             .\browserstack-cli.exe load run
           } else {
-            ./browserstack-cli load run --projectName="Thresholds Sanity" --entityName="Scam Test"
+            ./browserstack-cli load run
           }
 
       - name: Publish JUnit Report
