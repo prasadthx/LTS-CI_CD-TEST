@@ -49,14 +49,12 @@ jobs:
           fi
 
           DOWNLOAD_URL="https://load-api.browserstack.com/api/v1/binary?os=${OS}&arch=${ARCH}"
-          DOWNLOAD_URL="https://sdk-assets.bsstag.com/binary-macos-arm64-1.1.1-lts-cicd2.zip"
-          DOWNLOAD_URL="https://sdk-assets.bsstag.com/binary-macos-arm64-1.1.1-cicd-7.zip"
           
           echo "OS=$OS | ARCH=$ARCH | DOWNLOAD_URL=$DOWNLOAD_URL"
-
+          echo "Downloading Browserstack Binary..."
+          
           curl -fL "$DOWNLOAD_URL" -o browserstack-cli.zip
           unzip -oq browserstack-cli.zip
-          cp binary-macos-arm64 browserstack-cli
           chmod +x browserstack-cli
 
       - name: Download Browserstack CLI (Windows)
@@ -64,12 +62,10 @@ jobs:
         shell: pwsh
         run: |
           $url = "https://load-api.browserstack.com/api/v1/binary?os=win&arch=x64"
-          $url = "https://sdk-assets.bsstag.com/binary-win-x64-1.1.1-lts-cicd2.zip"
-          Write-Host "Downloading: $url"
+          Write-Host "Downloading Browserstack Binary..."
 
-          Invoke-WebRequest $url -OutFile browserstack-cli.zip
-          Expand-Archive browserstack-cli.zip -Force
-          cp browserstack-cli/binary-win-x64.exe browserstack-cli.exe
+          Invoke-WebRequest -Uri "${downloadUrl}" -OutFile "browserstack-cli.zip"
+          Expand-Archive -Path "browserstack-cli.zip" -DestinationPath "." -Force
 
       - name: Checkout sample Playwright repo
         shell: pwsh
