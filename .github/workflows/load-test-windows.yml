@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: CI-Windows
 
 # Controls when the workflow will run
 on:
@@ -19,7 +19,7 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  load-test-windows:
+  load-test-macos:
     runs-on: windows-latest   # change to macos-latest / ubuntu-latest if needed
 
     steps:
@@ -49,12 +49,12 @@ jobs:
           fi
 
           DOWNLOAD_URL="https://load-api.browserstack.com/api/v1/binary?os=${OS}&arch=${ARCH}"
-          DOWNLOAD_URL="https://sdk-assets.bsstag.com/binary-linux-x64-1.1.1-lts-cicd2.zip"
+          
           echo "OS=$OS | ARCH=$ARCH | DOWNLOAD_URL=$DOWNLOAD_URL"
-
+          echo "Downloading Browserstack Binary..."
+          
           curl -fL "$DOWNLOAD_URL" -o browserstack-cli.zip
           unzip -oq browserstack-cli.zip
-          cp binary-linuxstatic-x64 browserstack-cli
           chmod +x browserstack-cli
 
       - name: Download Browserstack CLI (Windows)
@@ -62,12 +62,10 @@ jobs:
         shell: pwsh
         run: |
           $url = "https://load-api.browserstack.com/api/v1/binary?os=win&arch=x64"
-          $url = "https://sdk-assets.bsstag.com/binary-win-x64-1.1.1-lts-cicd2.zip"
-          Write-Host "Downloading: $url"
+          Write-Host "Downloading Browserstack Binary..."
 
-          Invoke-WebRequest $url -OutFile browserstack-cli.zip
-          Expand-Archive browserstack-cli.zip -Force
-          cp browserstack-cli/binary-win-x64.exe browserstack-cli.exe
+          Invoke-WebRequest -Uri "${downloadUrl}" -OutFile "browserstack-cli.zip"
+          Expand-Archive -Path "browserstack-cli.zip" -DestinationPath "." -Force
 
       - name: Checkout sample Playwright repo
         shell: pwsh
@@ -80,10 +78,11 @@ jobs:
           if ($env:RUNNER_OS -eq "Windows") {
             .\browserstack-cli.exe load run
           } else {
-            ./browserstack-cli load run
+            ./browserstack-cli load run --projectName="Thresholds Sanity" --entityName="Scam Test"
           }
 
       - name: Publish JUnit Report
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: load-test-report
