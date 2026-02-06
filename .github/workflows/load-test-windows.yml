@@ -19,7 +19,7 @@ env:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  load-test-macos:
+  load-test-windows:
     runs-on: windows-latest   # change to macos-latest / ubuntu-latest if needed
 
     steps:
@@ -61,7 +61,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          $url = "https://load-api.browserstack.com/api/v1/binary?os=win&arch=x64"
+          $downloadUrl = "https://load-api.browserstack.com/api/v1/binary?os=win&arch=x64"
           Write-Host "Downloading Browserstack Binary..."
 
           Invoke-WebRequest -Uri "${downloadUrl}" -OutFile "browserstack-cli.zip"
